@@ -2,13 +2,11 @@
 
 > 📝🧾 Tables support for the [Draftail](https://www.draftail.org/) Draft.js editor.
 
-> Paragraph of fun / screenshot / visual
-
 Check out the [online demo](https://thibaudcolas.github.io/draftail-tables)!
 
 ## Features
 
-Tables!
+This package is completely experimental at this stage – do not use in real-world projects.
 
 ## Contributing
 
