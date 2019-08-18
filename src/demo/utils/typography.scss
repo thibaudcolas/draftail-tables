@@ -1,0 +1,32 @@
+@import "./variables";
+
+body {
+  font-family: $FONT_SYSTEM_SANS;
+}
+
+code {
+  font-family: $FONT_SYSTEM_MONO;
+}
+
+h1 {
+  font-size: $H1_FONT_SIZE;
+
+  @media only screen and (min-width: $BREAKPOINT_768) {
+    font-size: $H1_FONT_SIZE * 1.5;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 1rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+}

@@ -1,0 +1,99 @@
+{
+  "name": "draftail-tables",
+  "version": "0.1.0",
+  "description": "📝🧾 Tables support for the Draftail Draft.js editor",
+  "author": "Thibaud Colas",
+  "license": "MIT",
+  "main": "dist/draftail-tables.cjs.js",
+  "module": "dist/draftail-tables.esm.js",
+  "flow": "dist/draftail-tables.cjs.js.flow",
+  "sideEffects": false,
+  "keywords": [
+    "draftjs",
+    "draft-js",
+    "editor",
+    "react",
+    "wysiwyg",
+    "rich text",
+    "richtext",
+    "rte",
+    "tables"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thibaudcolas/draftail-tables.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thibaudcolas/draftail-tables/issues"
+  },
+  "homepage": "https://thibaudcolas.github.io/draftail-tables/",
+  "files": [
+    "dist/*.js",
+    "dist/*.flow",
+    "dist/*.css"
+  ],
+  "browserslist": {
+    "production": [
+      ">1%",
+      "not dead",
+      "not op_mini all",
+      "not IE 11"
+    ],
+    "development": [
+      ">1%",
+      "not dead",
+      "not op_mini all",
+      "not IE 11"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-flow-comments": "7.5.5",
+    "@commitlint/cli": "8.1.0",
+    "@commitlint/config-conventional": "8.1.0",
+    "@commitlint/travis-cli": "8.1.0",
+    "@semantic-release/changelog": "3.0.4",
+    "@semantic-release/exec": "3.3.6",
+    "@semantic-release/git": "7.0.16",
+    "@thibaudcolas/stylelint-config-cookbook": "3.0.0",
+    "coveralls": "3.0.6",
+    "danger": "9.1.5",
+    "draft-js": "0.10.5",
+    "draftail": "^1.3.0",
+    "enzyme": "3.10.0",
+    "enzyme-adapter-react-16": "1.14.0",
+    "enzyme-to-json": "3.4.0",
+    "flow-bin": "0.91.0",
+    "immutable": "~3.7.6",
+    "prettier": "1.18.2",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-scripts": "3.1.0",
+    "react-test-renderer": "16.9.0",
+    "rollup": "1.19.4",
+    "rollup-plugin-babel": "4.3.3",
+    "sass": "^1.22.10",
+    "semantic-release": "15.13.19",
+    "source-map-explorer": "^1.8.0",
+    "stylelint": "10.1.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "draft-js": "^0.10.5",
+    "react": "^16.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "CI=true react-scripts build && rollup -c",
+    "test": "npm run test:coverage -s",
+    "test:coverage": "CI=true react-scripts test --env=jsdom --coverage",
+    "test:watch": "react-scripts test --env=jsdom",
+    "report:coverage": "open coverage/lcov-report/index.html",
+    "report:build": "source-map-explorer --html 'build/static/js/*.js' > build/source-map-explorer.html && open build/source-map-explorer.html",
+    "report:package": "npm pack --loglevel notice 2>&1 >/dev/null | sed -e 's/^npm notice //' | tee build/package.txt && rm *.tgz",
+    "lint": "prettier --check '**/?(.)*.{md,css,scss,js,json,yaml,yml,html}' && eslint . && stylelint 'src/**/*.css'",
+    "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,yaml,yml,html}'",
+    "test:ci": "npm run lint -s && npm run build -s && flow --quiet && npm run test:coverage -s -- --outputFile build/test-results.json --json",
+    "prepare": "./.githooks/deploy.sh",
+    "prepublishOnly": "npm run build -s"
+  }
+}

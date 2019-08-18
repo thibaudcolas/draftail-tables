@@ -1,0 +1,47 @@
+@import "./variables";
+
+.link {
+  border-bottom: 1px dotted $TEAL_WAGTAIL_358C8B;
+}
+
+blockquote {
+  padding: 0 0 0 20px;
+  margin-left: 0;
+  font-style: italic;
+  border-left: 1px solid #e5e5e5;
+}
+
+summary {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+}
+
+/*
+ * Styles of the examples
+ */
+
+.anchor {
+  display: none;
+}
+
+h4:hover .anchor {
+  display: inline;
+}
+
+.list-inline {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.list-inline > li {
+  display: inline;
+  padding: 0;
+
+  + * {
+    margin-left: 0.5rem;
+  }
+}

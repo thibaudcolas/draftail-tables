@@ -1,0 +1,23 @@
+@import "./variables";
+@import-normalize;
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  box-sizing: border-box;
+  font-size: $BODY_FONT_SIZE;
+  color: $GREY_333333;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

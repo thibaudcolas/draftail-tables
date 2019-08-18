@@ -1,0 +1,15 @@
+.#{$NS}TableWrapper {
+  &__table {
+    display: table;
+  }
+
+  &__tr {
+    display: table-row;
+  }
+
+  &__td {
+    display: table-cell;
+    padding: 4px 8px 8px;
+    border: 1px solid $GREY_DDDDDD;
+  }
+}

@@ -1,0 +1,11 @@
+/* stylelint-disable declaration-no-important */
+@import "./variables";
+
+.u-text-center {
+  text-align: center !important;
+}
+
+.u-wagtail {
+  color: $TEAL_WAGTAIL_358C8B !important;
+  white-space: nowrap !important;
+}

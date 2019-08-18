@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Highlight renders 1`] = `
+<pre
+  style={
+    Object {
+      "position": "relative",
+    }
+  }
+>
+  <button
+    onClick={[Function]}
+    style={
+      Object {
+        "position": "absolute",
+        "right": "1rem",
+      }
+    }
+  >
+    Copy
+  </button>
+  <code />
+</pre>
+`;

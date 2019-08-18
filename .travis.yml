@@ -1,0 +1,50 @@
+sudo: false
+language: node_js
+install:
+  - npm ci
+script:
+  # Test Git hooks in CI, to make sure script upgrades do not break them.
+  - npm run prepare
+  # Test commit message validation in CI.
+  - git log -1 --pretty=%B >> latest.log && ./.git/hooks/commit-msg latest.log
+  - npm run test:ci
+  - npx commitlint-travis
+  - if [ "$TRAVIS_SECURE_ENV_VARS" == true ]; then npx danger ci --verbose; fi
+  - npm run report:package
+after_success:
+  - mv coverage/lcov-report build || true
+  - cat ./coverage/lcov.info | npx coveralls
+branches:
+  except:
+    - gh-pages
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    local_dir: build
+    github_token: "$PAGES_GITHUB_API_TOKEN"
+    on:
+      branch: master
+  - provider: script
+    skip_cleanup: true
+    script: npx semantic-release
+    on:
+      branch: master
+notifications:
+  email: false
+env:
+  global:
+    # Permissions: public_repo
+    # travis encrypt --pro DANGER_GITHUB_API_TOKEN=<value>
+    - secure: "1Ri3a4kFnpxFBOQy3vSbhC+5Rbnzwfoh56qVWl5WO1NUZm24IWaK/kWJ4VD1+LprXrr7aF1Ug6xoA/QQaA+E4iksS3ZbQYBScqGOrQjU8iwQUoYR5gzycV+RKFvnTp2NcIVsdHzbWJrd4B21nSOCJxuIV+G5dXZ9XfFFwlRRSNS+sbnwDhjE/RDwwPotRRHXuS8LSQUB/eOckqG5fr1ntU6FwN4UGD/+qLTOagF37w6jKrQpqoE6O7C4VFyc+2Fs5mjUoEyxgZIy/NlHyx6XuaqP36YoASltIIcAZ/sMrXg7vexNLOd/ZeZqOaS8LVuDSk8TN49VpAxLud/skB/sEcPjuOtB2G+WmWRA315oNqRpcr29C+ER17TT6d2ss98CXvDambSrc49NGJimhh24sjT/9GqAnNrd+96P9NUPVfaDjVRx5sqPafs/nRQw7SjjMnW11TJwnh6vs8wVSjUz89Q7W3ZxFdYyduREeE5dFYoiMoQvlyc99pM/AMIKZao0cIaJq5hMQAaJhJLelo0QPXrdrYahv7oVp/NtqpHsb9NkMVJ93brLiVEDLFKAFkrwgrwuUDu2YqRG8ndoj9OSHb/ZZezxNaUG/i3PGEg9M53JQKDwlG3rMu3x4CH2OyRvFP8sbQFwrdLpJCcsyYFeqXvxcuzh43FVdrLOYWm0jyw="
+    # Permissions: public_repo
+    # travis encrypt --pro PAGES_GITHUB_API_TOKEN=<value>
+    - secure: "EmG0jz7qMnOtb9XRHEYudkW3apc0CvcpzvvqIUhtjUlaC9s0GnyJ5oCloRlA/wA4VcUouyvX2Mlhf3wBNX1JqwMv/RQQr+WcHwNMlAYlU08WGoS3we8r7T7ttZLbiBONSPyjRhVbwLT85LMtO4VeCxSImG31Kpdi3dfv+zwr5e2Fsi2OmZgUrhIBwYwn5VFmM7vNS8j1zlVV59sIFAVSMdCDDxFieF7A839Y3IYVQYAX1+6pwzm3VpCmJb68gwY3N50NWy3sPtntqJZhy9Tzx1tND3nbaxbXguA99s1S3OWRc0vbmXT9Iqw5NFo0wHEcwxkA3gG7cm67rFrpZG541cG/JjnnxZ0xqEy9zhEam63bP8Otrg0Yq5sC6Slxz3wZyWh4IcS1BtBbjxHeKljy5ZAA8jGRFWK12Ev9vpvOHe2AK59v5Z2VT5fOfJzJQIi1Bfs58a+BNVDGiTdy03UwxEWKYXdxGhJ0NmyLqSZOIEXWQ32JGheF7P2qg6TBMm46+mwBxm7UQF8lMGp3erQQH/15TuuYVGRuyq+BgGIWx7/7k50C4LhXoteVxPmjztFGVlhRTa8rWEYJNbgMNV7D8FbMPDlW404+NtGqZQ3nCXDN4I5Cy45VqG0LBXvtAZBJPoXNUA49MOCsevYz27AZqX5lGF820hlP0qDN8nNHWfA="
+    # Permissions: public_repo
+    # travis encrypt --pro GH_TOKEN=<value>
+    - secure: "oEEIj/IjZHK8WbakAPe+xMGSUFjTnHs/B3ZKoTkNvrn7IrHF+hVWQEpUuZGAcHoltZGkfrFWQFYWtxMLo5FZiLbHkaj3+UXAquGQkxxUtQiipq1KnXBqNwufcU55esNcHisgWQX+7xm8C44GbXg6OAZUWlh+5elq1NAnPgOqJ8k94TCwKddvqL48+F95EXMud8X2FLNkQxOMf3WOyFJ+dZrPkxEWYwOV8DjdCYCn4zYRjDVrSizLYrok84NXG2eJ8cHJsmm4MjYgZk4bQ+Ik4WxJkRXSJ/wpZCLsPi0SenZbOE2WZnCkoT3Nsa7OZsikB1Oa85NH9QP+3TDJmlaWWCl3aUm6LQGCnVV9PL+cPLrORW5byTZTedUe0bIfjd6+4YyDMN8LENwWJIYuGIXyrnPcQ/UCZftYSnWPiVj7s4oaXfcxS+RDSZan2stfWuzQO0jyJLnijUqScxc4UH4s66FaiBiutDQf56QDAbHpz4eQZDd2HB7RcsUmekg4g8a63MNF8xf8zlMhwPCsHoEeOWbBwZ8NOO/eKp2m969eTzUkO8AB+N4TwgCZJOPmKVF0ExxN5YOD8kSdXOU1o3THTCRthF8g4w4qsoBCmFa31Te1s7KOaa2W4xQfc+AEuUCPoNeRuWNyMIbBa+v+9/+/AAcBaJQKooSbvKqMc4zIj7o="
+    # travis encrypt --pro GIT_AUTHOR_NAME=<value>
+    - secure: "HT+VboQYtRnYAn0TrESFjdF+YLun480YHTTmMsi9qSzIBNnbnzTjOX2tvJsedOvl2Fp9RFD7NG9kfYJIJrAm/xsLQpvq0BquoGOyVEKKraaDHKx/YnCnKKTElgxR0ZfCO8kGdw3K0gQ4Vw5rEosDxrBa1Vsr4EugsBvAoFVhL2re21s/qGpaUVCedU2Eb03MEN/J1QKiFLg5BlRJ2xNC0uhq9YEU/EaFwwnYzPzmAX/6GglO7aOlzMywyfTMbdf2en2c0lMbf2RAajVtBeO+LntieT1zDUOhl1py6jqaQ1MLx2Ul8xClH40oAxCnh58cZ5NbawnCr2qcg8w2EnenfQmO0AeVLk5CjIGExo0dqF/y/u1Lm0ibOpGdVtVi/Bvs9dH+HFASV63V9mDLlF8UFenN7V346c7RvNBFhcsr7/q9ZIul7lmZo6659eH1VxEvpttgeRuNMGTnK1wFYOnLeNjsiDPGW4RzbjrU2ooBHL1JyyJbk2O1z+xidpLX2Cgg4YjB+gjycwc8huyPDNNyBRsvQ1qm+mWpwlcGd5ARyiW7GOxBrKMJhiYN8xiCyTv0BKWIFa5zktyQp3anqM9aprCigKJsoF4R0uT7CXFnqtfMcQTW0A7XgUnJRoTLyW1EKKKgrVOTUEg+S96l2sDoF0CvyMvZ5GUF1ehhzpTlLd8="
+    # travis encrypt --pro GIT_AUTHOR_EMAIL=<value>
+    - secure: "HBiiZcmNGoCKtzV8z1EWCAqLjfTkfj+cGWRU56YRAbn1HAfzfUAjoJtEjgrsV4HJOUp5Jz7VajWgBaoDgBB7TJbw0eslIx07VgxgmwwF4znwfnzY/vaUarZ8hEPeL3qg2S2KuKo9veBFLIvAnX3+j9tUIiiRWR5rHeCxO85vo6u4hcDeuhNx+0VbZUuAqsVw7yEfg0rqSW7WtPyF0qkXtEZPpf11gUZeBzLNy+NyKl8MoyOxQp662Lkpk523x5lQzC6VyFsmyIOJF+HpvQg4xtHPVEBbbkKg03gMQK2801dlEilH9Wmo4LFol8+JaWvYzudwrErQweNFTQzaoH1X1WcM/J6vDesa5GI1y8cvF6w2vmhkDc3Uq5H2wwIzbavsrc+Slin/hXLLh/oqSoiKd3Cfw88vAQPCjqnPqaMiEQ8a/ywvYi9w10oOvn3xxtsk7N/wFcjXcwucENyyG3P1MoiqW0E9gCVgFwy39vEjncH0RB3IPxGNwY936TFxfU9EeEtdLaJvIITKxM6KvRa7O6gm/b41DgB/R6pssmhCe/1IAWlJDU83uJGKe7cmDsa4qXrW4swnhGjOYK9r1R+uC0WujMZo/oqTYyRPwegGclzk6p7xhw61XE0XDORU9GwF9UzyK3en92LCem8vTWZ/5WAyyiVgnA0UHVcZSm3hVYc="
+    # travis encrypt --pro NPM_TOKEN=<value>
+    - secure: "Wj2/ouTY5gp0c/8cyLAGTe0/V+hYNaYTg0K8QCpWL2mnxfvdtYE8yc/UQOi++vHS4NNeyEgO7i8/u/UP65gG5pkUZfEu+jXZCkjUqcrssRlJkdNXVeMFJgbPmkoIcM+pAU3tNo6yqySG+fI4HCdPEI/yDH93+e4o29BQI+iLQDDjx2hXDzkatZWMk5hPthSa5Zl4SowFMq9Eu4IuDc6zFt4dRYdhY/FVrwXGBz0nsH6vD/KXkDlItOCPV5D8BLYygS7zthsBW8g0aG1+rTUO8BIzReFnwXjXRFbRGtlj4Iq5euAlXYEmEa1VH1fYOW69AdI2GCDVRrSEqFwmEavt1CvnDbkAC5UTTPv/tBYbYvOUywSSM40N4Q1GUKVAyqeFfwC1ePUSXKdQs7Ke5FgTerBDa/16R1JbPmYuXB0/jFi0wZDrWTJjM7cXJQgJP+GSHbA583xca+sU+UqxeSKgjyFuRASl3ofZh7LZIgmsxCDhqYTdZlfAuHsoxyrG6CXAOaDEkl43LTGYvq3EHVe9bDaWgGg2uqtsnbcrgUypcFJ4fH+RQ7SVocjq3NHfSYqVxtI2dfPIrK4Rbv88crEM/mAxY+500AUNIA3kv8PKVAU39B/u3k46TR2CTUG9wmC2y5NRTmAFUMIYo/y8mUfqRv0uztFxnnPHFCJA6QJ/DzA="

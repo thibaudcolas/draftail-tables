@@ -1,0 +1,31 @@
+@import "../utils/variables";
+
+.page-header {
+  margin-bottom: 5vh;
+  text-align: left;
+
+  @media only screen and (min-width: $BREAKPOINT_480) {
+    text-align: center;
+  }
+}
+
+.page-header > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-title {
+  letter-spacing: 2px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page-description {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  font-size: $INTRO_FONT_SIZE;
+}
+
+.page-description img {
+  vertical-align: middle;
+}
