@@ -1,0 +1,20 @@
+
+📦  draftail-tables@1.0.0
+=== Tarball Contents === 
+1.1kB LICENSE                         
+1.5kB dist/draftail-tables.cjs.js.flow
+1.8kB dist/draftail-tables.cjs.js     
+1.5kB dist/draftail-tables.esm.js     
+3.1kB package.json                    
+861B  CHANGELOG.md                    
+1.4kB README.md                       
+=== Tarball Details === 
+name:          draftail-tables                         
+version:       1.0.0                                   
+filename:      draftail-tables-1.0.0.tgz               
+package size:  3.7 kB                                  
+unpacked size: 11.4 kB                                 
+shasum:        fe4d8d207f922f262f3f4e5065722ebc1c8ec539
+integrity:     sha512-hR3PQpLT3qrnS[...]7/JIWgxB+jEpQ==
+total files:   7                                       
+
