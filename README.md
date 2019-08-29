@@ -1,4 +1,6 @@
-# [Draftail Tables](https://thibaudcolas.github.io/draftail-tables/) [![npm](https://img.shields.io/npm/v/draftail-tables.svg)](https://www.npmjs.com/package/draftail-tables) [![Build Status](https://travis-ci.com/thibaudcolas/draftail-tables.svg?branch=master)](https://travis-ci.com/thibaudcolas/draftail-tables) [![Coverage Status](https://coveralls.io/repos/github/thibaudcolas/draftail-tables/badge.svg)](https://coveralls.io/github/thibaudcolas/draftail-tables)
+# [Draftail Tables](https://thibaudcolas.github.io/draftail-tables/) [<img src="https://raw.githubusercontent.com/thibaudcolas/draftail.org/master/.github/draftail-logo.svg?sanitize=true" width="90" height="90" align="right">](https://www.draftail.org/)
+
+[![npm](https://img.shields.io/npm/v/draftail-tables.svg)](https://www.npmjs.com/package/draftail-tables) [![Build Status](https://travis-ci.com/thibaudcolas/draftail-tables.svg?branch=master)](https://travis-ci.com/thibaudcolas/draftail-tables) [![Coverage Status](https://coveralls.io/repos/github/thibaudcolas/draftail-tables/badge.svg)](https://coveralls.io/github/thibaudcolas/draftail-tables)
 
 > 📝🧾 Tables support for the [Draftail](https://www.draftail.org/) Draft.js editor.
 
