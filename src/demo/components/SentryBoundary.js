@@ -1,40 +1,45 @@
 // @flow
 import React, { Component } from "react";
 import type { Node } from "react";
+import * as Sentry from "@sentry/browser";
+
+const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN;
 
 type Props = {
   children: Node,
 };
 
 type State = {
+  eventId: ?string,
   error: ?Error,
 };
 
 class SentryBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { error: null };
+    this.state = { eventId: null, error: null };
   }
 
   componentDidCatch(error: Error, errorInfo: { componentStack: string }) {
-    const isRavenAvailable = !!window.Raven;
-    this.setState({ error });
-
-    if (isRavenAvailable) {
-      window.Raven.captureException(error, { extra: errorInfo });
+    if (SENTRY_DSN !== "") {
+      Sentry.withScope((scope) => {
+        scope.setExtras(errorInfo);
+        const eventId = Sentry.captureException(error);
+        this.setState({ eventId, error });
+      });
+    } else {
+      this.setState({ error });
     }
   }
 
   render() {
     const { children } = this.props;
-    const { error } = this.state;
-    const isRavenAvailable = !!window.Raven;
+    const { eventId, error } = this.state;
 
     return error ? (
       <div className="DraftEditor-root">
         <div className="DraftEditor-editorContainer">
           <div className="public-DraftEditor-content">
-            {/* <img src={oops} /> */}
             <div className="u-text-center">
               <p>Oops. The editor just crashed.</p>
               <p>
@@ -42,13 +47,10 @@ class SentryBoundary extends Component<Props, State> {
                 information if you want to.
               </p>
               <div>
-                {isRavenAvailable ? (
+                {SENTRY_DSN !== "" ? (
                   <button
                     type="button"
-                    onClick={() =>
-                      window.Raven.lastEventId() &&
-                      window.Raven.showReportDialog()
-                    }
+                    onClick={() => Sentry.showReportDialog({ eventId })}
                   >
                     Submit a report
                   </button>

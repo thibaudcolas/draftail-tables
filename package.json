@@ -54,6 +54,7 @@
     "@semantic-release/changelog": "3.0.4",
     "@semantic-release/exec": "3.3.6",
     "@semantic-release/git": "7.0.16",
+    "@sentry/browser": "^5.6.1",
     "@thibaudcolas/stylelint-config-cookbook": "3.0.0",
     "coveralls": "3.0.6",
     "danger": "9.1.5",
