@@ -30,7 +30,8 @@
   "files": [
     "dist/*.js",
     "dist/*.flow",
-    "dist/*.css"
+    "dist/*.css",
+    "dist/flow/**/*.js"
   ],
   "browserslist": {
     "production": [
@@ -47,53 +48,66 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-transform-flow-comments": "7.5.5",
-    "@commitlint/cli": "8.1.0",
-    "@commitlint/config-conventional": "8.1.0",
-    "@commitlint/travis-cli": "8.1.0",
-    "@semantic-release/changelog": "3.0.4",
-    "@semantic-release/exec": "3.3.6",
-    "@semantic-release/git": "7.0.16",
-    "@thibaudcolas/stylelint-config-cookbook": "3.0.0",
-    "coveralls": "3.0.6",
-    "danger": "9.1.5",
+    "@babel/core": "7.29.7",
+    "@babel/eslint-parser": "7.29.9",
+    "@babel/preset-flow": "7.29.7",
+    "@babel/preset-react": "7.29.7",
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "@semantic-release/changelog": "7.0.0",
+    "@semantic-release/exec": "7.1.0",
+    "@semantic-release/git": "11.0.1",
+    "@vitest/coverage-v8": "5.0.1",
     "draft-js": "0.10.5",
-    "draftail": "^1.3.0",
-    "enzyme": "3.10.0",
-    "enzyme-adapter-react-16": "1.14.0",
-    "enzyme-to-json": "3.4.0",
-    "flow-bin": "0.91.0",
+    "draftail": "2.0.0",
+    "enzyme": "3.11.0",
+    "enzyme-adapter-react-16": "1.15.8",
+    "enzyme-to-json": "3.6.2",
+    "eslint": "9.39.5",
     "immutable": "~3.7.6",
-    "prettier": "1.18.2",
-    "react": "16.9.0",
-    "react-dom": "16.9.0",
-    "react-scripts": "3.1.0",
-    "react-test-renderer": "16.9.0",
-    "rollup": "1.19.4",
-    "rollup-plugin-babel": "4.3.3",
-    "sass": "^1.22.10",
-    "semantic-release": "15.13.19",
-    "source-map-explorer": "^1.8.0",
-    "stylelint": "10.1.0"
+    "jsdom": "20.0.3",
+    "postcss": "8.5.28",
+    "postcss-normalize": "13.0.1",
+    "postcss-scss": "4.0.9",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
+    "react-test-renderer": "16.14.0",
+    "sass": "1.105.1",
+    "semantic-release": "25.0.9",
+    "stylelint": "17.16.0",
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
+    "vite-plus": "1.0.0",
+    "vitest": "5.0.1"
   },
-  "dependencies": {},
   "peerDependencies": {
     "draft-js": "^0.10.5",
     "react": "^16.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "CI=true react-scripts build && rollup -c",
-    "test": "npm run test:coverage -s",
-    "test:coverage": "CI=true react-scripts test --env=jsdom --coverage",
-    "test:watch": "react-scripts test --env=jsdom",
-    "report:coverage": "open coverage/lcov-report/index.html",
-    "report:build": "source-map-explorer --html 'build/static/js/*.js' > build/source-map-explorer.html && open build/source-map-explorer.html",
-    "report:package": "npm pack --loglevel notice 2>&1 >/dev/null | sed -e 's/^npm notice //' | tee build/package.txt && rm *.tgz",
-    "lint": "prettier --check '**/?(.)*.{md,css,scss,js,json,yaml,yml,html}' && eslint . && stylelint 'src/**/*.scss'",
-    "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,yaml,yml,html}'",
-    "test:ci": "npm run lint -s && npm run build -s && flow --quiet && npm run test:coverage -s -- --outputFile build/test-results.json --json",
-    "prepare": "./.githooks/deploy.sh",
-    "prepublishOnly": "npm run build -s"
+    "dev": "vp dev",
+    "start": "vp dev",
+    "build": "vp build && vp pack && node tooling/flow-types.mjs",
+    "preview": "vp preview",
+    "test": "vp test run",
+    "test:coverage": "vp test run --coverage.enabled",
+    "test:watch": "vp test watch",
+    "report:coverage": "xdg-open coverage/index.html",
+    "report:package": "npm pack --dry-run",
+    "lint": "vp check && eslint src && stylelint \"src/**/*.scss\"",
+    "format": "vp fmt",
+    "test:ci": "npm run lint && npm run build && npm run test:coverage",
+    "prepare": "vp config --no-agent",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.10.0"
+  },
+  "overrides": {
+    "cheerio": "1.0.0-rc.12",
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
+    "vitest": "5.0.1",
+    "isomorphic-fetch": {
+      "node-fetch": "^2.0.0"
+    }
   }
 }

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SentryBoundary #error 1`] = `
+exports[`SentryBoundary > #error 1`] = `
 <div
   className="DraftEditor-root"
 >
@@ -48,7 +48,7 @@ exports[`SentryBoundary #error 1`] = `
 </div>
 `;
 
-exports[`SentryBoundary #error Raven 1`] = `
+exports[`SentryBoundary > #error Raven 1`] = `
 <div
   className="DraftEditor-root"
 >
@@ -90,4 +90,4 @@ exports[`SentryBoundary #error Raven 1`] = `
 </div>
 `;
 
-exports[`SentryBoundary renders 1`] = `"Test"`;
+exports[`SentryBoundary > renders 1`] = `"Test"`;

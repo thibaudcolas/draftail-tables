@@ -19,7 +19,7 @@ describe("SentryBoundary", () => {
 
   it("componentDidCatch Raven", () => {
     window.Raven = {
-      captureException: jest.fn(),
+      captureException: vi.fn(),
     };
     const wrapper = shallow(<SentryBoundary>Test</SentryBoundary>);
 
@@ -41,7 +41,10 @@ describe("SentryBoundary", () => {
 
   it("#error reload", () => {
     window.Raven = false;
-    window.location.reload = jest.fn();
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { reload: vi.fn() },
+    });
 
     shallow(<SentryBoundary>Test</SentryBoundary>)
       .setState({
@@ -63,10 +66,13 @@ describe("SentryBoundary", () => {
 
   it("#error Raven report", () => {
     window.Raven = {
-      lastEventId: jest.fn(() => true),
-      showReportDialog: jest.fn(),
+      lastEventId: vi.fn(() => true),
+      showReportDialog: vi.fn(),
     };
-    window.location.reload = jest.fn();
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { reload: vi.fn() },
+    });
 
     shallow(<SentryBoundary>Test</SentryBoundary>)
       .setState({

@@ -1,7 +1,0 @@
-node_modules
-*.min.js
-coverage/
-dist/
-*.bundle.js
-public/source-map-explorer.html
-build/

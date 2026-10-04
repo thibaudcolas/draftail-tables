@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 const pkg = require("./package.json");
 
 const CHANGELOG_HEADER = `# Changelog
@@ -21,7 +20,7 @@ ${COMMENT_POSTFIX}
 
 /**
  * See:
- * https://semantic-release.gitbook.io/semantic-release/
+ * https://semantic-release.org/usage/configuration/
  * https://github.com/semantic-release/npm
  * https://github.com/semantic-release/github
  * https://github.com/semantic-release/git
@@ -30,52 +29,41 @@ ${COMMENT_POSTFIX}
  * https://github.com/semantic-release/changelog
  */
 module.exports = {
-  branch: "master",
+  branches: ["main"],
   tagFormat: "v${version}",
-  npmPublish: true,
-  tarballDir: "dist",
-  assets: "dist/*.tgz",
-  verifyConditions: [
-    "@semantic-release/changelog",
-    "@semantic-release/npm",
-    "@semantic-release/git",
-    "@semantic-release/github",
+  plugins: [
+    ["@semantic-release/commit-analyzer", { preset: "angular" }],
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        changelogFile: "CHANGELOG.md",
+        changelogTitle: CHANGELOG_HEADER,
+      },
+    ],
+    ["@semantic-release/exec", { prepareCmd: "vp fmt CHANGELOG.md" }],
+    ["@semantic-release/npm", { tarballDir: "dist" }],
+    [
+      "@semantic-release/git",
+      {
+        message:
+          "chore(release): v${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+        assets: [
+          "README.md",
+          "CHANGELOG.md",
+          "package.json",
+          "package-lock.json",
+        ],
+      },
+    ],
+    [
+      "@semantic-release/github",
+      {
+        assets: ["dist/*.tgz"],
+        successComment: SUCCESS_COMMENT,
+        // Report failures even when the default semantic-release label is absent.
+        labels: false,
+      },
+    ],
   ],
-  analyzeCommits: {
-    preset: "angular",
-  },
-  verifyRelease: [],
-  generateNotes: ["@semantic-release/release-notes-generator"],
-  prepare: [
-    {
-      path: "@semantic-release/changelog",
-      changelogFile: "CHANGELOG.md",
-      changelogTitle: CHANGELOG_HEADER,
-    },
-    {
-      path: "@semantic-release/exec",
-      cmd: "prettier --write CHANGELOG.md && rm -rf .git/hooks",
-    },
-    "@semantic-release/npm",
-    {
-      path: "@semantic-release/git",
-      message:
-        "chore(release): v${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
-      assets: ["CHANGELOG.md", "package.json", "package-lock.json"],
-    },
-  ],
-  publish: [
-    "@semantic-release/npm",
-    {
-      path: "@semantic-release/github",
-      assets: ["dist/*.tgz"],
-    },
-  ],
-  success: [
-    {
-      path: "@semantic-release/github",
-      successComment: SUCCESS_COMMENT,
-    },
-  ],
-  fail: ["@semantic-release/github"],
 };

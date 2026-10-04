@@ -8,7 +8,7 @@ describe("Highlight", () => {
   });
 
   it("onCopy", () => {
-    document.execCommand = jest.fn();
+    document.execCommand = vi.fn();
     const wrapper = shallow(<Highlight value="" />);
 
     wrapper.find("button").simulate("click");

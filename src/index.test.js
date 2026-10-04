@@ -1,20 +1,21 @@
 describe("demo", () => {
   beforeEach(() => {
+    vi.resetModules();
     global.sessionStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
     };
   });
 
-  it("mount", () => {
+  it("mount", async () => {
     document.body.innerHTML = "<div id=root></div>";
-    require("./index");
+    await import("./index");
     expect(document.body.innerHTML).toContain("App");
   });
 
-  it("no mount", () => {
+  it("no mount", async () => {
     document.body.innerHTML = "";
-    require("./index");
+    await import("./index");
     expect(document.body.innerHTML).toBe("");
   });
 });
