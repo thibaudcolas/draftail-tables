@@ -1,8 +1,12 @@
 {
-  extends: ["config:recommended"],
+  extends: ["config:recommended", "helpers:pinGitHubActionDigests"],
   labels: ["enhancement"],
   schedule: ["every weekend"],
   packageRules: [
+    {
+      matchManagers: ["github-actions"],
+      groupName: "CI configuration dependencies",
+    },
     {
       matchPackageNames: ["draft-js", "draftail", "immutable"],
       enabled: false,

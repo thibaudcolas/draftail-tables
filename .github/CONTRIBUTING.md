@@ -46,5 +46,13 @@ warnings until the prototype itself is revisited.
 
 `npm ci` installs Vite Plus Git hooks. CI builds, tests, and uploads the demo and
 coverage on GitHub Actions. Pushes to `main` also run semantic-release and
-publish the demo to `gh-pages`; npm publishing needs trusted publishing or an
-`NPM_TOKEN` repository secret.
+deploy the demo with the native GitHub Pages artifact workflow. Repository
+Settings → Pages → Build and deployment → Source must be **GitHub Actions**,
+with the `github-pages` environment allowing deployments from `main`.
+The deployment URL is recorded on that environment. npm publishing needs trusted
+publishing or an `NPM_TOKEN` repository secret.
+
+Actions are pinned to commit SHAs, with Renovate maintaining the pins. Separate
+zizmor and CodeQL workflows scan Actions configuration and JavaScript respectively;
+CodeQL also runs on a schedule. Superseded PR checks are canceled, while CI runs
+on `main` finish their releases and deployments without being interrupted.

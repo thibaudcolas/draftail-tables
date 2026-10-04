@@ -5,28 +5,36 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Do not interrupt npm publishing or Pages deployment on main.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
       - run: npm run test:ci
       - run: npm run report:package
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          name: build
           path: build
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage
           path: coverage
+          if-no-files-found: error
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -38,10 +46,12 @@ jobs:
       group: release
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v7
+          # semantic-release authenticates its own pushes with GITHUB_TOKEN.
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
           package-manager-cache: false
@@ -54,21 +64,18 @@ jobs:
           VP_GIT_HOOKS: "0"
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
-      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     concurrency:
       group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v8
-        with:
-          name: build
-          path: build
-      - uses: JamesIves/github-pages-deploy-action@v4.9.0
-        with:
-          branch: gh-pages
-          folder: build
-          clean: true
+      - uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        id: deployment
