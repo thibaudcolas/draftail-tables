@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  # Do not interrupt npm publishing or Pages deployment on main.
+  # Do not interrupt Pages deployment on main.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   test:
@@ -32,36 +32,6 @@ jobs:
           name: coverage
           path: coverage
           if-no-files-found: error
-  release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
-    concurrency:
-      group: release
-      cancel-in-progress: false
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          # semantic-release authenticates its own pushes with GITHUB_TOKEN.
-          persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: .node-version
-          package-manager-cache: false
-      - run: npm ci
-      - run: npm run build
-      - run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          VP_GIT_HOOKS: "0"
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
